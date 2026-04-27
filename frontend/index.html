@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auth System</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- ── CARD ── -->
+    <div class="card" id="authCard">
+
+      <!-- Logo / Brand -->
+      <div class="brand">
+        <div class="brand-icon"><i class="fas fa-shield-halved"></i></div>
+        <h1 class="brand-name">SecureAuth</h1>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="tabs">
+        <button class="tab active" id="loginTab" onclick="switchTab('login')">Login</button>
+        <button class="tab" id="registerTab" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- Global message banner (success / error) -->
+      <div class="message-banner hidden" id="messageBanner">
+        <i class="banner-icon fas"></i>
+        <span id="bannerText"></span>
+      </div>
+
+      <!-- ══════════════════════════════════
+           LOGIN FORM
+      ══════════════════════════════════ -->
+      <form id="loginForm" class="auth-form" novalidate>
+
+        <!-- Email -->
+        <div class="field-group">
+          <label for="loginEmail">Email Address</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <span class="field-error" id="loginEmailError"></span>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label for="loginPassword">Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password"/>
+            <button type="button" class="toggle-pw" onclick="togglePassword('loginPassword', this)" aria-label="Toggle password visibility">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <span class="field-error" id="loginPasswordError"></span>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="remember-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="rememberMe"/>
+            <span class="checkmark"></span>
+            Remember me for 7 days
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary" id="loginBtn">
+          <span class="btn-text">Login</span>
+          <span class="btn-spinner hidden"><i class="fas fa-circle-notch fa-spin"></i></span>
+        </button>
+
+      </form>
+
+      <!-- ══════════════════════════════════
+           REGISTER FORM
+      ══════════════════════════════════ -->
+      <form id="registerForm" class="auth-form hidden" novalidate>
+
+        <!-- Name -->
+        <div class="field-group">
+          <label for="regName">Full Name</label>
+          <div class="input-wrap">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="regName" placeholder="John Doe" autocomplete="name"/>
+          </div>
+          <span class="field-error" id="regNameError"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="field-group">
+          <label for="regEmail">Email Address</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <span class="field-error" id="regEmailError"></span>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label for="regPassword">Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="regPassword" placeholder="Create a strong password" autocomplete="new-password" oninput="updateStrengthMeter(this.value)"/>
+            <button type="button" class="toggle-pw" onclick="togglePassword('regPassword', this)" aria-label="Toggle password visibility">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <span class="field-error" id="regPasswordError"></span>
+
+          <!-- Password Strength Meter -->
+          <div class="strength-meter" id="strengthMeter">
+            <div class="strength-bar">
+              <div class="strength-fill" id="strengthFill"></div>
+            </div>
+            <span class="strength-label" id="strengthLabel"></span>
+          </div>
+
+          <!-- Password requirements checklist -->
+          <ul class="pw-rules" id="pwRules">
+            <li id="rule-length"><i class="fas fa-circle-xmark"></i> At least 8 characters</li>
+            <li id="rule-upper"><i class="fas fa-circle-xmark"></i> At least 1 uppercase letter</li>
+            <li id="rule-number"><i class="fas fa-circle-xmark"></i> At least 1 number</li>
+            <li id="rule-special"><i class="fas fa-circle-xmark"></i> At least 1 special character</li>
+          </ul>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="field-group">
+          <label for="regConfirm">Confirm Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="regConfirm" placeholder="Repeat your password" autocomplete="new-password"/>
+            <button type="button" class="toggle-pw" onclick="togglePassword('regConfirm', this)" aria-label="Toggle password visibility">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <span class="field-error" id="regConfirmError"></span>
+        </div>
+
+        <button type="submit" class="btn-primary" id="registerBtn">
+          <span class="btn-text">Create Account</span>
+          <span class="btn-spinner hidden"><i class="fas fa-circle-notch fa-spin"></i></span>
+        </button>
+
+      </form>
+
+    </div><!-- /card -->
+
+    <!-- ══════════════════════════════════
+         REGISTRATION SUCCESS PAGE
+    ══════════════════════════════════ -->
+    <div class="card success-page hidden" id="registerSuccessCard">
+      <div class="success-burst">
+        <div class="burst-ring"></div>
+        <div class="burst-icon"><i class="fas fa-user-check"></i></div>
+      </div>
+      <h2 class="success-title">You're registered!</h2>
+      <p class="success-subtitle">Your account has been created successfully.</p>
+
+      <div class="success-detail-box">
+        <div class="detail-row">
+          <i class="fas fa-user"></i>
+          <span id="regSuccessName">—</span>
+        </div>
+        <div class="detail-row">
+          <i class="fas fa-envelope"></i>
+          <span id="regSuccessEmail">—</span>
+        </div>
+        <div class="detail-row">
+          <i class="fas fa-calendar-check"></i>
+          <span id="regSuccessDate">—</span>
+        </div>
+      </div>
+
+      <p class="redirect-note"><i class="fas fa-circle-notch fa-spin"></i> Redirecting to login in <span id="regCountdown">3</span>s…</p>
+
+      <button class="btn-primary" onclick="goToLogin()">
+        <i class="fas fa-arrow-right-to-bracket"></i> Go to Login Now
+      </button>
+    </div>
+
+    <!-- ══════════════════════════════════
+         LOGIN SUCCESS PAGE
+    ══════════════════════════════════ -->
+    <div class="card success-page hidden" id="loginSuccessCard">
+      <div class="success-burst login-burst">
+        <div class="burst-ring"></div>
+        <div class="burst-icon"><i class="fas fa-circle-check"></i></div>
+      </div>
+      <h2 class="success-title">Login successful!</h2>
+      <p class="success-subtitle">Welcome back, you're all set.</p>
+
+      <p class="redirect-note"><i class="fas fa-circle-notch fa-spin"></i> Loading your dashboard in <span id="loginCountdown">2</span>s…</p>
+    </div>
+
+    <!-- ══════════════════════════════════
+         DASHBOARD (shown after login)
+    ══════════════════════════════════ -->
+    <div class="card dashboard hidden" id="dashboardCard">
+
+      <!-- Header bar -->
+      <div class="dash-header">
+        <div class="dash-avatar" id="dashAvatar">—</div>
+        <div>
+          <p class="dash-greeting">Welcome back 👋</p>
+          <h2 class="dash-username" id="dashName">—</h2>
+        </div>
+        <button class="btn-logout-icon" onclick="logout()" title="Logout">
+          <i class="fas fa-right-from-bracket"></i>
+        </button>
+      </div>
+
+      <!-- Info cards -->
+      <div class="dash-info-grid">
+        <div class="dash-info-card">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <p class="info-label">Email</p>
+            <p class="info-value" id="dashEmail">—</p>
+          </div>
+        </div>
+        <div class="dash-info-card">
+          <i class="fas fa-calendar"></i>
+          <div>
+            <p class="info-label">Member Since</p>
+            <p class="info-value" id="dashSince">—</p>
+          </div>
+        </div>
+        <div class="dash-info-card">
+          <i class="fas fa-shield-halved"></i>
+          <div>
+            <p class="info-label">Account Status</p>
+            <p class="info-value status-active"><i class="fas fa-circle"></i> Active</p>
+          </div>
+        </div>
+        <div class="dash-info-card">
+          <i class="fas fa-id-badge"></i>
+          <div>
+            <p class="info-label">User ID</p>
+            <p class="info-value" id="dashId">—</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-logout" onclick="logout()">
+        <i class="fas fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+
+  </div><!-- /container -->
+
+  <script src="script.js"></script>
+</body>
+</html>
